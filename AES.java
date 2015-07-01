@@ -35,6 +35,53 @@ public class AES{
 	   		 
 	}
 
+    public static char[][] subBytes( char[][] matrix){
+	
+	
+   		for (int i = 0; i < matrix.length; i++){
+			
+			for (int j= 0; j < matrix[0].length;j++){
+			
+		    	int val = matrix[i][j];
+
+				byte y_number = (byte)val;
+				byte x_number = (byte)(val >> 8 & 0xff);
+
+				matrix[i][j] = TABLE[x_number][y_number];
+			
+			}
+		
+		}	
+	
+	
+ 		return matrix;	
+	}
+
+	public static char[][] shiftRows( char[][] matrix ){
+	
+		for (int i = 1; i < matrix.length; i++){
+	         	
+			int temp = matrix[i][0];	
+		
+			for (int j = 0; j <matrix[0].length - 1;j++){
+				matrix[i][j] = matrix[i][j+1] 
+			
+			}	
+			matrix[i][matrix.length - 1] = temp;
+		
+		}	
+		return matrix;	
+	}
+
+	public static char[][] minColumns ( char[][] matrix ) {
+	
+		
+
+	
+	
+	}
+	
+
 	public static char[][] key_expansion(String keyFile) throws FileNotFoundException{
 	
 	
@@ -49,20 +96,46 @@ public class AES{
 		    data.add((char)((other>>16) & 0xff));
 		    data.add((char)other);
 
+
 		}
 
 	    while ( b < 240 ) {
 			int t = data.get((data.size() - 2)) << 16;
 			t += data.get(data.size() - 1);
-			schedule_core(t,1); //change back to rcon
+		    ArrayList<String>word=schedule_core(t,rcon++); //change back to rcon
+            exclusive_or(word, data); 
 			break;
 		}
 
         return null;
 	
 	}
+	public static void exclusive_or(ArrayList<String> word, ArrayList<Character> data){
+		
+		System.out.println("word: " + word + " data: " + (int)data.get(0));
+	
+        for (int i = 0; i < word.size();i++){
+	        
+            int index = i / 2;
+			int word_num = Integer.parseInt(word.get(i),16);
+			int data_num = Integer.parseInt( ((int) data.get(index))+"", 16);
+            if (i == 0 || i == 2){
+		    	data_num=((data_num>>8) & 0xff);	
+			
+			} else {
+			
+		       data_num = ((int)((byte)data_num));	
 
-	public static void schedule_core(int t, int rcon){
+			}
+			word.set(i, String.format("%02x",( word_num ^ data_num )));
+		
+		}	
+		System.out.println("word: " + word + " data: " + (int)data.get(0));
+		
+	
+	}
+
+	public static ArrayList<String> schedule_core(int t, int rcon){
 		byte[] data = new byte[4];
 		//data[0], least significant
 		for(int i = 0; i < data.length; i++){
@@ -93,11 +166,12 @@ public class AES{
 			dup.set(i, sub);
 
 		}
-		System.out.println(dup);
-		//byte b = dup.get(0);
+		//System.out.println(dup);
 
-		System.out.println(Integer.parseInt(dup.get(0),16) ^ (int)Math.pow(2, rcon - 1));
+		/*exclusive or the byte with 2 to the power of i-1*/
+		dup.set(0,(Integer.parseInt(dup.get(0),16) ^ (int)Math.pow(2, rcon - 1)) + "");
 
+		return dup;
 
 	}
 }
