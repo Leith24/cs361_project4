@@ -12,7 +12,6 @@ There are 3 files in our assignment: AES.java, key(0-3), and inputFile(0-3 based
 We finished the assignment.
 
 [Test Cases]
-inputFile0
 [command line]
 java AES e key inputFile
 java AES d key inputFile.enc
