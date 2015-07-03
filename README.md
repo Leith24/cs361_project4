@@ -13,10 +13,11 @@ We finished the assignment.
 
 [Test Cases]
 [command line]
-java AES e key inputFile
-java AES d key inputFile.enc
+java AES e keyFile inputFile
+java AES d keyFile inputFile.enc
 
 inputFile
+keyFile
 
 [Output of test 1]
 inputFile.enc
@@ -24,10 +25,11 @@ inputFile.enc.dec
    
 [Input of test 2]
 [command line]
-java AES e key2 inputFile2
-java AES d key2 inputFile2.enc
+java AES e keyFile2 inputFile2
+java AES d keyFile2 inputFile2.enc
 
-inputFile1
+inputFile2
+keyFile2
 
 [Output of test 2]
 inputFile2.enc
@@ -35,22 +37,22 @@ inputFile2.enc.dec
 
 [Input of test 3]
 [command line]
-java AES e key3 inputFile3
-java AES d key3 inputFile3.enc
+java AES e keyFile3 inputFile3
+java AES d keyFile3 inputFile3.enc
 
-inputFile2
-
+inputFile3
+keyFile3
 [Output of test 3]
 inputFile3.enc
 inputFile3.enc.dec
 
 [Input of test 4]
 [command line]
-java AES e key4 inputFile4
-java AES d key4 inputFile4.enc
+java AES e keyFile4 inputFile4
+java AES d keyFile4 inputFile4.enc
 
-inputFile3
-
+inputFile4
+keyFile4
 [Output of test 4]
 inputFile4.enc
 inputFile4.enc.dec
