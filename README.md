@@ -25,8 +25,8 @@ inputFile0.enc.dec
    
 [Input of test 2]
 [command line]
-java AES e key inputFile1
-java AES d key inputFile1.enc
+java AES e key1 inputFile1
+java AES d key1 inputFile1.enc
 
 inputFile1
 
@@ -36,8 +36,8 @@ inputFile1.enc.dec
 
 [Input of test 3]
 [command line]
-java AES e key inputFile2
-java AES d key inputFile2.enc
+java AES e key2 inputFile2
+java AES d key2 inputFile2.enc
 
 inputFile2
 
@@ -47,8 +47,8 @@ inputFile2.enc.dec
 
 [Input of test 4]
 [command line]
-java AES e key inputFile3
-java AES d key inputFile3.enc
+java AES e key3 inputFile3
+java AES d key3 inputFile3.enc
 
 inputFile3
 
