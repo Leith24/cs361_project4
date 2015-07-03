@@ -31,13 +31,45 @@ public class AES{
 	   		, keyFile = args[1]
 	   		, inputFile = args[2];
 
-	   	//key_expansion(keyFile);
-	   		char[][] m = {{0x19, 0xa0, 0x9a, 0xe9}, {0x3d, 0xf4, 0xc6, 0xf8},{0xe3, 0xe2, 0x8d, 0x48}, {0xbe, 0x2b, 0x2a, 0x08}};
-	   		m = subBytes(m);
-	   		m = shiftRows(m);
-			m = mixColumns(m);
+	   		char[][] input = arrayInput(inputFile);
+	   		char[][] expandKey = key_expansion(keyFile);
+	   		input = subBytes(input);
+	   		input = shiftRows(input);
+			input = mixColumns(input);
 	   		char[][] round_key = {{0xa0, 0x88, 0x23, 0x2a}, {0xfa, 0x54, 0xa3, 0x6c},{0xfe, 0x2c, 0x39, 0x76}, {0x17, 0xb1, 0x39, 0x05}};
-	   		 addRoundKey(m , round_key );
+	   		addRoundKey(input , round_key );
+	}
+
+	public static char[][] arrayInput(String inputFile) throws FileNotFoundException{
+		Scanner input = new Scanner(new File(inputFile));
+		int c = 0;
+		ArrayList<Character> data = new ArrayList<Character>();
+		while (input.hasNextLine()){
+			String str = input.nextLine();
+			for (int i=0; i < str.length();i++){
+				int value = Integer.parseInt(str.charAt(i) + "",16);
+				
+				data.add((char)value);
+			}
+
+			
+		}
+		char[][] matrix = new char[(int)Math.sqrt(data.size())][(int)Math.sqrt(data.size())];
+		/*filling the first part of key expansion with key*/
+		for (int j = 0; j < 8; j++){
+			for (int i = 0 ; i < matrix.length ;i++){
+				
+				matrix[j][i] = data.get(c++);
+				
+			}
+		}
+		for (int i = 0; i < matrix.length; i++){
+			for (int j = 0; j < matrix[0].length; j++){
+				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+			}
+			System.out.println();
+		}
+		return matrix;
 	}
 
 	public static char[][] addRoundKey(char [][] matrix, char[][] key){
@@ -48,12 +80,12 @@ public class AES{
 			}
 		}
 
-		for (int i = 0; i < matrix.length; i++){
-			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
-			}
-			System.out.println();
-		}
+		// for (int i = 0; i < matrix.length; i++){
+		// 	for (int j = 0; j < matrix[0].length; j++){
+		// 		System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+		// 	}
+		// 	System.out.println();
+		// }
 		return matrix;
 	}
 
@@ -111,41 +143,18 @@ public class AES{
 		for (int i = 0; i < matrix.length; i++){
 			matrix = mixColumn2(i, matrix);
 		}
-		for(int i = 0; i < matrix.length; i++){
-			for(int j = 0; j<matrix[0].length; j++){
-				System.out.print(String.format("%02x,",(int)matrix[i][j]));
-			}
-			System.out.println();
-		}
+		// for(int i = 0; i < matrix.length; i++){
+		// 	for(int j = 0; j<matrix[0].length; j++){
+		// 		System.out.print(String.format("%02x,",(int)matrix[i][j]));
+		// 	}
+		// 	System.out.println();
+		// }
 		return matrix;
 	}
 	
 
 	public static char[][] key_expansion(String keyFile) throws FileNotFoundException{
 	
-	
-    	/*Scanner input = new Scanner(new File(keyFile));	
-        int other = 0
-		   ,rcon = 1
-		   , b = 0;
-		ArrayList<Character> data = new ArrayList<Character>();
-		while(input.hasNext()){
-		//get the encryption key
-			other = Integer.parseInt(input.next());
-		    data.add((char)((other>>16) & 0xff));
-		    data.add((char)other);
-
-
-		}
-
-	    while ( b < 240 ) {
-			int t = data.get((data.size() - 2)) << 16;
-			t += data.get(data.size() - 1);
-		    ArrayList<String>word=schedule_core(t,rcon++); //change back to rcon
-            exclusive_or(word, data); 
-			break;
-		}*/
-
 		Scanner input = new Scanner(new File(keyFile));
 		int c = 0;
 		ArrayList<Character> data = new ArrayList<Character>();
@@ -159,9 +168,9 @@ public class AES{
 
 			
 		}
-		System.out.println(c);
-		key_expansion(data, new char[4][60]);
-        return null;
+		// System.out.println(c);
+		return key_expansion(data, new char[4][60]);
+        
 	
 	}
     /*rotates the first index into the back of the array and shifts 
@@ -177,8 +186,8 @@ public class AES{
 
 
 
-	public static void key_expansion(ArrayList<Character> data, char[][] matrix){
-		System.out.println(data.size());
+	public static char[][] key_expansion(ArrayList<Character> data, char[][] matrix){
+		// System.out.println(data.size());
 		int c=0;
 
 		/*filling the first part of key expansion with key*/
@@ -207,13 +216,14 @@ public class AES{
 			}
 			i++;
 		}
+		return matrix;
 
-		for (int x = 0; x < matrix.length; x++){
-			for (int y = 0; y < matrix[0].length; y++){
-				System.out.print(String.format("%02x ", (int)matrix[x][y]));
-			}
-			System.out.println();
-		}
+		// for (int x = 0; x < matrix.length; x++){
+		// 	for (int y = 0; y < matrix[0].length; y++){
+		// 		System.out.print(String.format("%02x ", (int)matrix[x][y]));
+		// 	}
+		// 	System.out.println();
+		// }
 
 	}
 	public static int[] sub( int[] data ){
@@ -248,7 +258,7 @@ public class AES{
 			word.set(i, String.format("%02x",( word_num ^ data_num )));
 		
 		}	
-		System.out.println("word: " + word + " data: " + (int)data.get(0));
+		// System.out.println("word: " + word + " data: " + (int)data.get(0));
 		
 	
 	}
@@ -270,7 +280,7 @@ public class AES{
 			str=String.format("%02x", data[i]);
 			dup.add(str);
 		}
-		System.out.println(dup);
+		//System.out.println(dup);
 		/*substition*/
 		for (int i = 0 ; i < dup.size();i++){
 
