@@ -31,7 +31,7 @@ public class AES{
 	   		, keyFile = args[1]
 	   		, inputFile = args[2];
 
-	   		char[][] input = arrayInput(inputFile);
+	   		/*char[][] input = arrayInput(inputFile);
 	   		char[][] expandKey = key_expansion(keyFile);
 	   		if (option.toLowerCase().equals("e")){
 	   			char[][] enc = encrypt(input,expandKey);
@@ -43,10 +43,12 @@ public class AES{
 	   				}
 	   			}
 	   		}
-	   		else if (option.toLowerCase() == 'd')
-	   			decryption(input, expandKey);
+	   		else if (option.toLowerCase() == 'd'){*/
+	   			invertShiftRows(new char[][]{{0xd4,0xe0,0xb8,0x1e},{0xbf,0xb4,0x41,0x27},{0x5d,0x52,0x11,0x98},{0x30,0xae,0xf1,0xe5}});
+	   			//decryption(input, expandKey);
+	   		/*}
 	   		else
-	   			System.out.println("Wrong input");
+	   			System.out.println("Wrong input");*/
 	}
 	public static char[][] decrypt(char[][] input, char[][] key){
 
@@ -65,12 +67,29 @@ public class AES{
 	}
 	public static char[][] invertShiftRows(char[][] matrix){
 
+		for (int i = 1; i < matrix.length; i++){
+	        
+		    char[] temp = Arrays.copyOf(matrix[i], matrix[i].length);
+			for (int j = matrix[0].length-1; j >=0;j--){
+				matrix[i][(j+i)%4] = temp[j];
+			}	
+		
+		}	
+
+		System.out.println("After invertShiftRows");
+		for (int i = 0; i < matrix.length; i++){
+			for (int j = 0; j < matrix[0].length; j++){
+				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+			}	
+		}
+		System.out.println();
+		return matrix;	
 	}
 	public static char[][] invertSubBytes(char[][] matrix){
-
+		return matrix;
 	}
 	public static char[][] invertMixColumns(char[][] matrix){
-		
+		return matrix;
 	}
 	public static char[][] encrypt(char[][] input, char[][]key){
 		char[][] state = input;
