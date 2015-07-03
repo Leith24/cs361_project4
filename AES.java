@@ -157,11 +157,18 @@ public class AES{
         return null;
 	
 	}
-
+    /*rotates the first index into the back of the array and shifts 
+	the other indexes up by one*/
 	public static int[] rotateWord(int[] data){
+		int temp = data[0];
+        for (int i = 0 ; i < data.length - 1; i++){
+			data[i] = data[i+1];
+		}
+		data[3] = temp;
+		return data;
 
-		
 	}
+
 
 	public static void key_expansion(ArrayList<Character> data, char[][] matrix){
 		System.out.println(data.size());
