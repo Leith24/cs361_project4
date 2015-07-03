@@ -31,12 +31,12 @@ public class AES{
 	   		, keyFile = args[1]
 	   		, inputFile = args[2];
 
-	  // 	key_expansion(keyFile);
-	   		char[][] m = {{0x19, 0xa0, 0x9a, 0xe9}, {0x3d, 0xf4, 0xc6, 0xf8},{0xe3, 0xe2, 0x8d, 0x48}, {0xbe, 0x2b, 0x2a, 0x08}};
+	   	key_expansion(keyFile);
+	   		/*char[][] m = {{0x19, 0xa0, 0x9a, 0xe9}, {0x3d, 0xf4, 0xc6, 0xf8},{0xe3, 0xe2, 0x8d, 0x48}, {0xbe, 0x2b, 0x2a, 0x08}};
 	   		m = subBytes(m);
 	   		m = shiftRows(m);
 	   		char[][] round_key = {{0xa0, 0x88, 0x23, 0x2a}, {0xfa, 0x54, 0xa3, 0x6c},{0xfe, 0x2c, 0x39, 0x76}, {0x17, 0xb1, 0x39, 0x05}};
-	   		 addRoundKey(m , round_key );
+	   		 addRoundKey(m , round_key );*/
 	}
 
 	public static char[][] addRoundKey(char [][] matrix, char[][] key){
@@ -117,13 +117,13 @@ public class AES{
 	public static char[][] key_expansion(String keyFile) throws FileNotFoundException{
 	
 	
-    	Scanner input = new Scanner(new File(keyFile));	
+    	/*Scanner input = new Scanner(new File(keyFile));	
         int other = 0
 		   ,rcon = 1
 		   , b = 0;
 		ArrayList<Character> data = new ArrayList<Character>();
 		while(input.hasNext()){
-		/*get the encryption key*/	
+		//get the encryption key
 			other = Integer.parseInt(input.next());
 		    data.add((char)((other>>16) & 0xff));
 		    data.add((char)other);
@@ -137,10 +137,59 @@ public class AES{
 		    ArrayList<String>word=schedule_core(t,rcon++); //change back to rcon
             exclusive_or(word, data); 
 			break;
-		}
+		}*/
 
+		Scanner input = new Scanner(new File(keyFile));
+		int c = 0;
+		ArrayList<Character> data = new ArrayList<Character>();
+		while (input.hasNextLine()){
+			String str = input.nextLine();
+			for (int i=0; i < str.length();i++){
+				int value = Integer.parseInt(str.charAt(i) + "");
+				
+				data.add((char)value);
+			}
+
+			
+		}
+		System.out.println(c);
+		key_expansion(data, new char[4][60]);
         return null;
 	
+	}
+
+	public static int[] rotateWord(int[] data){
+
+		
+	}
+
+	public static void key_expansion(ArrayList<Character> data, char[][] matrix){
+		System.out.println(data.size());
+		int c=0;
+		for (int j = 0; j < 8; j++){
+			for (int i = 0 ; i < matrix.length ;i++){
+				
+				matrix[i][j] = data.get(c++);
+				
+			}
+		}
+
+		int i = 8;
+		while ( i < 60){
+			int[] temp = {matrix[0][i-1],matrix[1][i-1],matrix[2][i-1],matrix[3][i-1]};
+			if(i%8 == 0){
+				temp = (subBytes(rotateWord(temp))) ^ (rcon/8); 
+			}
+			else if(i%8 == 4){
+				temp = subWord(temp);
+			}
+			for(int j = 0; j< matrix.length; j++){
+				matrix[j][i] = matrix[j][i-8] ^ temp;
+			}
+			i++;
+		}
+
+		System.out.println(Arrays.toString(matrix));
 	}
 	public static void exclusive_or(ArrayList<String> word, ArrayList<Character> data){
 		
