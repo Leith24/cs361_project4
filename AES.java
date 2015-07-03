@@ -43,12 +43,35 @@ public class AES{
 	   				}
 	   			}
 	   		}
-	   		/*else if (option.toLowerCase() == 'd')
-	   			decryption();*/
+	   		else if (option.toLowerCase() == 'd')
+	   			decryption(input, expandKey);
 	   		else
 	   			System.out.println("Wrong input");
 	}
+	public static char[][] decrypt(char[][] input, char[][] key){
 
+		char[][] state = input;
+		int round = 14;
+		addRoundKey(state,key,round*4);
+		round--;
+		while(round>=0){
+			addRoundKey((invertSubBytes(invertShiftRows(state))),key,round*4);
+			invertMixColumns(state);
+			round--;
+		}
+		addRoundKey((invertSubBytes(invertShiftRows(state))),key,round*4);
+		return state;
+		
+	}
+	public static char[][] invertShiftRows(char[][] matrix){
+
+	}
+	public static char[][] invertSubBytes(char[][] matrix){
+
+	}
+	public static char[][] invertMixColumns(char[][] matrix){
+		
+	}
 	public static char[][] encrypt(char[][] input, char[][]key){
 		char[][] state = input;
 		int round = 0;
