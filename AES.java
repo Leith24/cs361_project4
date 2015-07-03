@@ -22,7 +22,7 @@ public class AES{
 		   {0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16}
 		};
 
-	public static void main(String args[]) throws FileNotFoundException{
+	public static void main(String args[]) throws Exception{
 	
 		
 		
@@ -33,33 +33,66 @@ public class AES{
 
 	   		char[][] input = arrayInput(inputFile);
 	   		char[][] expandKey = key_expansion(keyFile);
-	   		input = subBytes(input);
-	   		input = shiftRows(input);
-			input = mixColumns(input);
-	   		//char[][] round_key = {{0xa0, 0x88, 0x23, 0x2a}, {0xfa, 0x54, 0xa3, 0x6c},{0xfe, 0x2c, 0x39, 0x76}, {0x17, 0xb1, 0x39, 0x05}};
-	   		addRoundKey(input , expandKey);
+	   		if (option.toLowerCase().equals("e")){
+	   			char[][] enc = encrypt(input,expandKey);
+	   			OutputStream output = new FileOutputStream(args[2] + ".enc");
+	   			for (int j = 0 ; j < enc[0].length; j++){
+	   				for (int i = 0; i < enc.length; i++){
+	   					String str = enc[i][j] + "";
+	   					output.write(str.getBytes());//System.out.println(Integer.toHexString(str,16));
+	   				}
+	   			}
+	   		}
+	   		/*else if (option.toLowerCase() == 'd')
+	   			decryption();*/
+	   		else
+	   			System.out.println("Wrong input");
+	}
+
+	public static char[][] encrypt(char[][] input, char[][]key){
+		char[][] state = input;
+		int round = 0;
+		addRoundKey(state, key, round*4);
+		round++;
+		while (round < 14){
+			addRoundKey(mixColumns(shiftRows(subBytes(state))), key, round*4);
+			round++;
+		}
+		addRoundKey(shiftRows(subBytes(state)), key, round*4);
+
+
+		/*output*/
+		for (int i = 0; i < state.length; i++){
+			for (int j = 0; j < state[0].length; j++){
+				System.out.print(String.format("%02x, ", (int)state[i][j]));
+			}
+			System.out.println();
+		}
+		return state;
 	}
 
 	public static char[][] arrayInput(String inputFile) throws FileNotFoundException{
 		Scanner input = new Scanner(new File(inputFile));
 		int c = 0;
 		ArrayList<Character> data = new ArrayList<Character>();
+		int value = 0;
 		while (input.hasNextLine()){
 			String str = input.nextLine();
-			for (int i=0; i < str.length();i++){
-				int value = Integer.parseInt(str.charAt(i) + "",16);
-				
+			str = str.replaceAll("\\s", "");
+			for (int i=0; i < str.length()-1;i+=2){ ///////////****NOTE******
+				value = Integer.parseInt(str.substring(i,i+2) + "",16);
 				data.add((char)value);
 			}
 
 			
 		}
-		char[][] matrix = new char[4][8];
+	//	System.out.println("Data: " + data);
+		char[][] matrix = new char[4][4];
 		/*filling the first part of key expansion with key*/
-		for (int j = 0; j < matrix.length; j++){
-			for (int i = 0 ; i < matrix[0].length ;i++){
+		for (int j = 0; j < matrix[0].length; j++){
+			for (int i = 0 ; i < matrix.length ;i++){
 				
-				matrix[j][i] = data.get(c++);
+				matrix[i][j] = data.get(c++);
 				
 			}
 		}
@@ -72,20 +105,21 @@ public class AES{
 		return matrix;
 	}
 
-	public static char[][] addRoundKey(char [][] matrix, char[][] key){
+	public static char[][] addRoundKey(char [][] matrix, char[][] key, int round){
 
 		for (int i = 0 ; i < matrix.length; i++){
 			for (int j = 0 ; j < matrix[0].length ; j++){
-				matrix[i][j] = (char)(matrix[i][j] ^ key[i][j]);
+				matrix[i][j] = (char)(matrix[i][j] ^ key[i][round + j]);
 			}
 		}
-
-		// for (int i = 0; i < matrix.length; i++){
-		// 	for (int j = 0; j < matrix[0].length; j++){
-		// 		System.out.print(String.format("%02x, ", (int)matrix[i][j]));
-		// 	}
-		// 	System.out.println();
-		// }
+		System.out.println("AFter addRoundKey (" + round/4 + ")");
+		for (int i = 0; i < matrix.length; i++){
+			for (int j = 0; j < matrix[0].length; j++){
+				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+			}
+			
+		}
+		System.out.println();
 		return matrix;
 	}
 
@@ -109,12 +143,14 @@ public class AES{
 		}	
 	
 		
-		/*for (int i = 0; i < matrix.length; i++){
+		System.out.println("After subBytes");
+		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
 				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
 			}
-			System.out.println();
-		}*/
+			
+		}
+		System.out.println();
  		return matrix;	
 	}
 
@@ -131,7 +167,15 @@ public class AES{
 			}
 		
 		}	
-		
+
+		System.out.println("After shiftRows");
+		for (int i = 0; i < matrix.length; i++){
+			for (int j = 0; j < matrix[0].length; j++){
+				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+			}
+			
+		}
+		System.out.println();
 		return matrix;	
 	}
 
@@ -143,12 +187,16 @@ public class AES{
 		for (int i = 0; i < matrix.length; i++){
 			matrix = mixColumn2(i, matrix);
 		}
-		// for(int i = 0; i < matrix.length; i++){
-		// 	for(int j = 0; j<matrix[0].length; j++){
-		// 		System.out.print(String.format("%02x,",(int)matrix[i][j]));
-		// 	}
-		// 	System.out.println();
-		// }
+
+
+		System.out.println("After mixCOlumns");
+		for (int i = 0; i < matrix.length; i++){
+			for (int j = 0; j < matrix[0].length; j++){
+				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+			}
+			
+		}
+		System.out.println();
 		return matrix;
 	}
 	
@@ -160,6 +208,7 @@ public class AES{
 		ArrayList<Character> data = new ArrayList<Character>();
 		while (input.hasNextLine()){
 			String str = input.nextLine();
+			str = str.replaceAll("\\s", "");
 			for (int i=0; i < str.length();i++){
 				int value = Integer.parseInt(str.charAt(i) + "");
 				
