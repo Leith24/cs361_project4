@@ -31,12 +31,13 @@ public class AES{
 	   		, keyFile = args[1]
 	   		, inputFile = args[2];
 
-	   	key_expansion(keyFile);
-	   		/*char[][] m = {{0x19, 0xa0, 0x9a, 0xe9}, {0x3d, 0xf4, 0xc6, 0xf8},{0xe3, 0xe2, 0x8d, 0x48}, {0xbe, 0x2b, 0x2a, 0x08}};
+	   	//key_expansion(keyFile);
+	   		char[][] m = {{0x19, 0xa0, 0x9a, 0xe9}, {0x3d, 0xf4, 0xc6, 0xf8},{0xe3, 0xe2, 0x8d, 0x48}, {0xbe, 0x2b, 0x2a, 0x08}};
 	   		m = subBytes(m);
 	   		m = shiftRows(m);
+			m = mixColumns(m);
 	   		char[][] round_key = {{0xa0, 0x88, 0x23, 0x2a}, {0xfa, 0x54, 0xa3, 0x6c},{0xfe, 0x2c, 0x39, 0x76}, {0x17, 0xb1, 0x39, 0x05}};
-	   		 addRoundKey(m , round_key );*/
+	   		 addRoundKey(m , round_key );
 	}
 
 	public static char[][] addRoundKey(char [][] matrix, char[][] key){
@@ -108,9 +109,14 @@ public class AES{
 	
 		
 		for (int i = 0; i < matrix.length; i++){
-			mixColumn2(i, matrix);
+			matrix = mixColumn2(i, matrix);
 		}
-	
+		for(int i = 0; i < matrix.length; i++){
+			for(int j = 0; j<matrix[0].length; j++){
+				System.out.print(String.format("%02x,",(int)matrix[i][j]));
+			}
+			System.out.println();
+		}
 		return matrix;
 	}
 	
@@ -347,7 +353,7 @@ public class AES{
     // array of bytes.  If your state is an array of integers, you'll have
     // to make adjustments. 
 
-    public static void mixColumn2 (int c, char[][] matrix) {
+    public static char[][] mixColumn2 (int c, char[][] matrix) {
 	// This is another alternate version of mixColumn, using the 
 	// logtables to do the computation.
 	
@@ -359,11 +365,14 @@ public class AES{
 	
 	// This is exactly the same as mixColumns1, if 
 	// the mul columns somehow match the b columns there.
-	matrix[0][c] = (char)((byte)(mul(2,a[0]) ^ a[2] ^ a[3] ^ mul(3,a[1])));
-	matrix[1][c] = (char)((byte)(mul(2,a[1]) ^ a[3] ^ a[0] ^ mul(3,a[2])));
-	matrix[2][c] = (char)((byte)(mul(2,a[2]) ^ a[0] ^ a[1] ^ mul(3,a[3])));
-	matrix[3][c] = (char)((byte)(mul(2,a[3]) ^ a[1] ^ a[2] ^ mul(3,a[0])));
-    } // mixColumn2
+	
+	matrix[0][c] = (char)(((byte)(mul(2,a[0]) ^ a[2] ^ a[3] ^ mul(3,a[1]))) & 0xff);
+	//System.out.println(String.format("%02x",(int)matrix[0][c]));
+	matrix[1][c] = (char)(((byte)(mul(2,a[1]) ^ a[3] ^ a[0] ^ mul(3,a[2]))) & 0xff);
+	matrix[2][c] = (char)(((byte)(mul(2,a[2]) ^ a[0] ^ a[1] ^ mul(3,a[3]))) & 0xff);
+	matrix[3][c] = (char)(((byte)(mul(2,a[3]) ^ a[1] ^ a[2] ^ mul(3,a[0]))) & 0xff);
+    return matrix;
+	} // mixColumn2
 
     public static void invMixColumn2 (int c, char[][] matrix) {
 	byte a[] = new byte[4];
