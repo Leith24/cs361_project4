@@ -56,6 +56,7 @@ public class AES{
 		return matrix;
 	}
 
+
     public static char[][] subBytes( char[][] matrix){
 	
 	
@@ -165,14 +166,16 @@ public class AES{
 			data[i] = data[i+1];
 		}
 		data[3] = temp;
-		return data;
-
+	return data;
 	}
+
 
 
 	public static void key_expansion(ArrayList<Character> data, char[][] matrix){
 		System.out.println(data.size());
 		int c=0;
+
+		/*filling the first part of key expansion with key*/
 		for (int j = 0; j < 8; j++){
 			for (int i = 0 ; i < matrix.length ;i++){
 				
@@ -180,23 +183,44 @@ public class AES{
 				
 			}
 		}
-
+        /*expand the rest of the key*/
 		int i = 8;
 		while ( i < 60){
 			int[] temp = {matrix[0][i-1],matrix[1][i-1],matrix[2][i-1],matrix[3][i-1]};
 			if(i%8 == 0){
-				temp = (subBytes(rotateWord(temp))) ^ (rcon/8); 
+				//temp = sub(rotateWord(temp)) ^ (rcon/8); 
+				temp = sub(rotateWord(temp));
+				temp[0] = temp[0] ^ (int)Math.pow(2,(i/8)-1);
 			}
-			else if(i%8 == 4){
-				temp = subWord(temp);
+			else if(i % 8 == 4){
+				temp = sub(temp);
 			}
 			for(int j = 0; j< matrix.length; j++){
-				matrix[j][i] = matrix[j][i-8] ^ temp;
+			//	matrix[j][i] = matrix[j][i-8] ^ temp;
+				matrix[j][i] =(char)(matrix[j][i-8] ^ temp[j]);
 			}
 			i++;
 		}
 
-		System.out.println(Arrays.toString(matrix));
+		for (int x = 0; x < matrix.length; x++){
+			for (int y = 0; y < matrix[0].length; y++){
+				System.out.print(String.format("%02x ", (int)matrix[x][y]));
+			}
+			System.out.println();
+		}
+
+	}
+	public static int[] sub( int[] data ){
+	
+		for (int i = 0 ; i < data.length ; i++){
+		
+			int val = data[i];
+			byte y_number = (byte) (val & 0xf);
+			byte x_number = (byte) (val>>4 & 0xf);
+			data[i] = TABLE[x_number][y_number];
+		
+		}	
+		return data;	
 	}
 	public static void exclusive_or(ArrayList<String> word, ArrayList<Character> data){
 		
