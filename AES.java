@@ -51,7 +51,22 @@ public class AES{
 	   		, inputFile = args[2];
 
 	   		char[][] input = arrayInput(inputFile);
+	   		System.out.println("The Plaintext is: ");
+	   		for (int i = 0; i < input.length; i++){
+				for (int j = 0; j < input[0].length; j++){
+					System.out.print(String.format("%02x ", (int)input[i][j]));
+				}
+				System.out.println();
+			}	
+			System.out.println();
 	   		char[][] expandKey = key_expansion(keyFile);
+	   		System.out.println("The expanded key is: ");
+	   		for (int i = 0; i < expandKey.length; i++){
+				for (int j = 0; j < expandKey[0].length; j++){
+					System.out.print(String.format("%02x ", (int)expandKey[i][j]));
+				}
+				System.out.println("\n");
+			}	
 	   		if (option.toLowerCase().equals("e")){
 	   			char[][] enc = encrypt(input,expandKey);
 	   			OutputStream output = new FileOutputStream(args[2] + ".enc");
@@ -81,12 +96,27 @@ public class AES{
 		int round = 14;
 		addRoundKey(state,key,round*4);
 		round--;
-		while(round>=0){
+		while(round>0){
 			addRoundKey((invertSubBytes(invertShiftRows(state))),key,round*4);
 			invertMixColumns(state);
 			round--;
 		}
 		addRoundKey((invertSubBytes(invertShiftRows(state))),key,round*4);
+		System.out.println("The decryption of the ciphertext:");
+		for (int i = 0; i < state.length; i++){
+			for (int j = 0; j < state[0].length; j++){
+				System.out.print(String.format("%02x ", (int)state[i][j]));
+			}
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println("The decryption of the ciphertext:");
+		for (int i = 0; i < state.length; i++){
+			for (int j = 0; j < state[0].length; j++){
+				System.out.print(String.format("%02x", (int)state[j][i]));
+			}	
+		}
+		System.out.println();
 		return state;
 		
 	}
@@ -104,7 +134,7 @@ public class AES{
 		System.out.println("After invertShiftRows");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}	
 		}
 		System.out.println();
@@ -130,7 +160,7 @@ public class AES{
 		System.out.println("After inverseSubBytes");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}
 			
 		}
@@ -148,7 +178,7 @@ public class AES{
 		System.out.println("After invertMixCOlumns");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}
 			
 		}
@@ -168,9 +198,10 @@ public class AES{
 
 
 		/*output*/
+		System.out.println("The ciphertext:");
 		for (int i = 0; i < state.length; i++){
 			for (int j = 0; j < state[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)state[i][j]));
+				System.out.print(String.format("%02x ", (int)state[i][j]));
 			}
 			System.out.println();
 		}
@@ -202,12 +233,12 @@ public class AES{
 				
 			}
 		}
-		for (int i = 0; i < matrix.length; i++){
+	/*	for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[i][j]));
 			}
 			System.out.println();
-		}
+		}*/
 		return matrix;
 	}
 
@@ -218,10 +249,10 @@ public class AES{
 				matrix[i][j] = (char)(matrix[i][j] ^ key[i][round + j]);
 			}
 		}
-		System.out.println("AFter addRoundKey (" + round/4 + ")");
+		System.out.println("After addRoundKey (" + round/4 + ")");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}
 			
 		}
@@ -252,7 +283,7 @@ public class AES{
 		System.out.println("After subBytes");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}
 			
 		}
@@ -277,7 +308,7 @@ public class AES{
 		System.out.println("After shiftRows");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}
 			
 		}
@@ -295,10 +326,10 @@ public class AES{
 		}
 
 
-		System.out.println("After mixCOlumns");
+		System.out.println("After mixColumns");
 		for (int i = 0; i < matrix.length; i++){
 			for (int j = 0; j < matrix[0].length; j++){
-				System.out.print(String.format("%02x, ", (int)matrix[i][j]));
+				System.out.print(String.format("%02x", (int)matrix[j][i]));
 			}
 			
 		}
