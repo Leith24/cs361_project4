@@ -1,30 +1,57 @@
-# README #
-https://en.wikipedia.org/wiki/Rijndael_key_schedule
+UTEID: gdl386; dao384;
+FIRSTNAME: Gavin; Daniel;
+LASTNAME: Leith; Olvera;
+CSACCOUNT: gavindl; dolvera1;
+EMAIL: johnyd@cs.utexas.edu; bradp@cs.utexas.edu;
 
-This README would normally document whatever steps are necessary to get your application up and running.
+[Program 4]
+[Description]
+There are 3 files in our assignment: AES.java, key(0-3), and inputFile(0-3 based on test case). The program is compiled with javac *.java. In our assignment we take in a plain text file called inputFile and make a char matrix array out of it. We then run through the key to expand it from the given 32 bits to be 256 bits, the algorithm we used is found at https://en.wikipedia.org/wiki/Rijndael_key_schedule. Once the expanded key has been made, we put the plain text through the AES algorithm. To aid us with this algorithm, we followed the pseudocode found at http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf. We also borrowed the code given by Dr. Young for mixColumns. We run the text through 15 total rounds, using subBytes, shiftRows, mixColumns, and addRoundKey until we get a fully encrypted text. From here, we output this text into inputFile.enc. We can then run the program again, with a d flag, to decrypt the program. The initial program is the same, the key is expaned and the file is read. From there, we run the text through decryption where we inverse subBytes, shiftRows, mixColumns, and addRowKeys. Again, we borrowed Dr. Young's code for invMixColumns. Once this is done, the decrypted text is placed in inputFile.enc.dec.
+ 
+[Finish]
+We finished the assignment.
 
-### What is this repository for? ###
+[Test Cases]
+inputFile0
+[command line]
+java AES e key inputFile0
+java AES d key inputFile0.enc
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+inputFile0
 
-### How do I get set up? ###
+[Output of test 1]
+inputFile0.enc
+inputFile0.enc.dec
+   
+[Input of test 2]
+[command line]
+java AES e key inputFile1
+java AES d key inputFile1.enc
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+inputFile1
 
-### Contribution guidelines ###
+[Output of test 2]
+inputFile1.enc
+inputFile1.enc.dec
 
-* Writing tests
-* Code review
-* Other guidelines
+[Input of test 3]
+[command line]
+java AES e key inputFile2
+java AES d key inputFile2.enc
 
-### Who do I talk to? ###
+inputFile2
 
-* Repo owner or admin
-* Other community or team contact
+[Output of test 3]
+inputFile2.enc
+inputFile2.enc.dec
+
+[Input of test 4]
+[command line]
+java AES e key inputFile3
+java AES d key inputFile3.enc
+
+inputFile3
+
+[Output of test 4]
+inputFile3.enc
+inputFile3.enc.dec
