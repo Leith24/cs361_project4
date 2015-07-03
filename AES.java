@@ -36,8 +36,8 @@ public class AES{
 	   		input = subBytes(input);
 	   		input = shiftRows(input);
 			input = mixColumns(input);
-	   		char[][] round_key = {{0xa0, 0x88, 0x23, 0x2a}, {0xfa, 0x54, 0xa3, 0x6c},{0xfe, 0x2c, 0x39, 0x76}, {0x17, 0xb1, 0x39, 0x05}};
-	   		addRoundKey(input , round_key );
+	   		//char[][] round_key = {{0xa0, 0x88, 0x23, 0x2a}, {0xfa, 0x54, 0xa3, 0x6c},{0xfe, 0x2c, 0x39, 0x76}, {0x17, 0xb1, 0x39, 0x05}};
+	   		addRoundKey(input , expandKey);
 	}
 
 	public static char[][] arrayInput(String inputFile) throws FileNotFoundException{
@@ -54,10 +54,10 @@ public class AES{
 
 			
 		}
-		char[][] matrix = new char[(int)Math.sqrt(data.size())][(int)Math.sqrt(data.size())];
+		char[][] matrix = new char[4][8];
 		/*filling the first part of key expansion with key*/
-		for (int j = 0; j < 8; j++){
-			for (int i = 0 ; i < matrix.length ;i++){
+		for (int j = 0; j < matrix.length; j++){
+			for (int i = 0 ; i < matrix[0].length ;i++){
 				
 				matrix[j][i] = data.get(c++);
 				
