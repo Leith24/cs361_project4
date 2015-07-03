@@ -14,14 +14,14 @@ We finished the assignment.
 [Test Cases]
 inputFile0
 [command line]
-java AES e key inputFile0
-java AES d key inputFile0.enc
+java AES e key inputFile
+java AES d key inputFile.enc
 
-inputFile0
+inputFile
 
 [Output of test 1]
-inputFile0.enc
-inputFile0.enc.dec
+inputFile.enc
+inputFile.enc.dec
    
 [Input of test 2]
 [command line]
