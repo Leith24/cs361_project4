@@ -70,23 +70,25 @@ public class AES{
 	   		if (option.toLowerCase().equals("e")){
 	   			char[][] enc = encrypt(input,expandKey);
 	   			OutputStream output = new FileOutputStream(args[2] + ".enc");
+	   			PrintStream printer = new PrintStream(output);
 	   			for (int j = 0 ; j < enc[0].length; j++){
 	   				for (int i = 0; i < enc.length; i++){
-	   					String str = enc[i][j] + "";
-	   					output.write(str.getBytes());//System.out.println(Integer.toHexString(str,16));
+	   					//String str = enc[i][j] + "";
+	   					printer.print(String.format("%02x",(int)enc[i][j]));//System.out.println(Integer.toHexString(str,16));
 	   				}
 	   			}
 	   		}
 	   		else if (option.toLowerCase().equals("d")){
 	   			char[][] dec = decryption(input, expandKey);
 	   			OutputStream output = new FileOutputStream(args[2] + ".dec");
+	   			PrintStream printer = new PrintStream(output);
 	   			for (int j = 0 ; j < dec[0].length; j++){
 	   				for (int i = 0; i < dec.length; i++){
-	   					String str = dec[i][j] + "";
-	   					output.write(str.getBytes());//System.out.println(Integer.toHexString(str,16));
-	   				}
+	   					printer.print(String.format("%02x",(int)dec[i][j]));
+
 	   			}
 	   		}
+	   	}
 	   		else
 	   			System.out.println("Wrong input");
 	}
